@@ -75,7 +75,7 @@ SELECT first_name, last_name, address from staff s
 INNER JOIN address a ON s.address_id = a.address_id;
 SELECT * FROM staff s;
 #* 6b. Use `JOIN` to display the total amount rung up by each staff member in August of 2005. Use tables `staff` and `payment`.
-SELECT s.staff_id, first_namee, last_name, SUM(amount) AS "Total amount rung up" FROM staff s
+SELECT s.staff_id, first_name, last_name, SUM(amount) AS "Total amount rung up" FROM staff s
 INNER JOIN payment p ON s.staff_id = p.staff_id
 GROUP BY s.staff_id;
 SELECT * FROM staff s;
@@ -118,6 +118,34 @@ SELECT * FROM film WHERE film_id IN
 (SELECT category_id FROM category WHERE name = "family"
 )
 );
+#* 7e. Display the most frequently rented movies in descending order.
+SELECT title, COUNT(r.inventory_id) AS "Number of times movie rented" FROM film f
+INNER JOIN inventory i ON f.film_id = i.film_id
+INNER JOIN rental r ON r.inventory_id = i.inventory_id #check the type of join
+GROUP BY f.title
+ORDER BY COUNT(r.rental_id) DESC;
+
+#* 7f. Write a query to display how much business, in dollars, each store brought in.
+#SELECT * from store;
+SELECT s.store_id, SUM(amount) as "Revenue (by store)" FROM store s
+RIGHT JOIN staff st ON s.store_id = st.store_id
+LEFT JOIN payment p ON st.staff_id = p.staff_id
+GROUP BY s.store_id;
+
+#* 7g. Write a query to display for each store its store ID, city, and country.
+SELECT s.store_id, ci.city, co.country FROM store s
+JOIN address a ON s.address_id = a.address_id
+JOIN city ci ON a.city_id = ci.city_id
+JOIN country co ON ci.country_id = co.country_id;
+
+#* 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+SELECT * FROM film_category;
+SELECT c.name, SUM(p.amount) as "Revenue per category" FROM category c
+JOIN film_category fc ON c.category_id = fc.category_id
+JOIN inventory i ON fc.film_id = i.film_id
+JOIN rental r ON r.inventory_id = i.inventory_id
+JOIN payment p ON p.rental_id = r.rental_id
+GROUP BY name;
 
 #* 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
 CREATE VIEW top_5_genres AS
