@@ -85,24 +85,24 @@ SHOW CREATE TABLE sakila.address;
 
 
 -- * 6a. Use `JOIN` to display the first and last names, as well as the address, of each staff member. Use the tables `staff` and `address`:
-SELECT s.first_name, s.last_name, a.address from staff s
-INNER JOIN address a ON s.address_id = a.address_id;
+SELECT s.first_name, s.last_name, a.address from staff AS s
+INNER JOIN address AS a ON s.address_id = a.address_id;
 SELECT * FROM staff s;
 
 -- * 6b. Use `JOIN` to display the total amount rung up by each staff member in August of 2005. Use tables `staff` and `payment`.
-SELECT s.staff_id, first_name, last_name, SUM(amount) AS "Total amount rung up" FROM staff s
-INNER JOIN payment p ON s.staff_id = p.staff_id
+SELECT s.staff_id, first_name, last_name, SUM(amount) AS "Total amount rung up" FROM staff AS s
+INNER JOIN payment AS p ON s.staff_id = p.staff_id
 GROUP BY s.staff_id;
 SELECT * FROM staff s;
 
 -- * 6c. List each film and the number of actors who are listed for that film. Use tables `film_actor` and `film`. Use inner join.
-SELECT f.title, COUNT(fa.actor_id) AS "Number of actors in film" FROM film f
-INNER JOIN film_actor fa ON f.film_id = fa.film_id
+SELECT f.title, COUNT(fa.actor_id) AS "Number of actors in film" FROM film AS f
+INNER JOIN film_actor AS fa ON f.film_id = fa.film_id
 GROUP BY f.film_id;
 
 -- * 6d. How many copies of the film `Hunchback Impossible` exist in the inventory system?
-SELECT f.title, COUNT(i.inventory_id) as "Number of Hunchback Impossibles in inventory" FROM film f
-INNER JOIN inventory i ON f.film_id = i.film_id
+SELECT f.title, COUNT(i.inventory_id) as "Number of Hunchback Impossibles in inventory" FROM film AS f
+INNER JOIN inventory AS i ON f.film_id = i.film_id
 GROUP BY f.film_id HAVING title = "Hunchback Impossible";
 
 -- * 6e. Using the tables `payment` and `customer` and the `JOIN` command, list the total paid by each customer. List the customers alphabetically by last name:
@@ -170,11 +170,11 @@ GROUP BY name;
 -- * 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
 DROP VIEW top_5_genres;
 CREATE VIEW top_5_genres AS
-SELECT c.name, sum(p.amount) as "Revenue per Category" FROM category c
-JOIN film_category fc ON c.category_id = fc.category_id
-JOIN inventory i ON fc.film_id = i.film_id
-JOIN rental r ON r.inventory_id = i.inventory_id
-JOIN payment p ON p.rental_id = r.rental_id
+SELECT c.name, sum(p.amount) as "Revenue per Category" FROM category AS c
+JOIN film_category AS fc ON c.category_id = fc.category_id
+JOIN inventory AS i ON fc.film_id = i.film_id
+JOIN rental AS r ON r.inventory_id = i.inventory_id
+JOIN payment AS p ON p.rental_id = r.rental_id
 GROUP BY name
 ORDER BY SUM(p.amount) DESC
 LIMIT 5;
